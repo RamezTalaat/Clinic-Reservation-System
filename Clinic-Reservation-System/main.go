@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
 	initializers "github.com/RamezTalaat/Clinic-Reservation-System/Initializers"
+	"github.com/gofiber/fiber/v2"
 )
 
 func init(){
@@ -11,6 +12,13 @@ func init(){
 	initializers.ConnectToDatabase()
 }
 
+func welcome(c *fiber.Ctx) error {
+	return c.SendString("welcome to our API")
+}
 func main(){
-	fmt.Println("Hello")
+	app := fiber.New()
+
+    app.Get("/",welcome)
+
+    app.Listen(":" + os.Getenv("PORT"))
 }
