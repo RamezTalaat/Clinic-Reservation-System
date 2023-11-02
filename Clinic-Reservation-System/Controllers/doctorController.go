@@ -30,7 +30,7 @@ func CreateDoctor(c *fiber.Ctx) error{
 		return c.Status(400).JSON(err.Error())
 	}
 
-	initializers.DB.Create(&doctor)
+	initializers.Database.Db.Create(&doctor)
 	reaspose := ResponseMessage(doctor)
 
 	return c.Status(200).JSON(reaspose)

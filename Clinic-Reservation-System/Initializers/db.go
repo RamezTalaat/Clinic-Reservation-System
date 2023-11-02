@@ -9,13 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+type DbInstance struct{
+
+	Db *gorm.DB
+}
+
+ var Database DbInstance
 
 func ConnectToDatabase() {
 	var err error
 
 	dsn := os.Getenv("DB_URL")
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil{
 		fmt.Println("Failed to connect to Database")
@@ -24,7 +29,9 @@ func ConnectToDatabase() {
 	}
 
 	//Migration
-	DB.AutoMigrate(&Models.Doctor{}, &Models.Slot{}, &Models.Appointment{})
+	db.AutoMigrate(&Models.Doctor{}, &Models.Slot{})
+
+	Database = DbInstance{Db : db}
 }
 
 
