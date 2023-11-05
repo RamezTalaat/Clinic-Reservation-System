@@ -15,6 +15,8 @@ func init(){
 func Routers (app *fiber.App){
 	app.Get("/API", welcome)
 	app.Post("/doctor",controllers.CreateDoctor)
+	app.Get("/getDoctors",controllers.GetDoctors)
+	app.Get("/getDoctor/:id",controllers.GetDoctor)
 }
 
 func welcome(c *fiber.Ctx) error {
