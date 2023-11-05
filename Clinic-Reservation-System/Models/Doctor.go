@@ -5,5 +5,5 @@ type Doctor struct {
 	Name     string `json:"name" gorm:"column:name"`
 	Mail     string `json:"mail" gorm:"column:mail"`
 	Password string `json:"password" gorm:"column:password"`
-	Slots    []Slot `gorm:"foreignKey:Doctor_id"`
+	Slots    []Slot `json:"slots" gorm:"foreignKey:Doctor_id"`
 }

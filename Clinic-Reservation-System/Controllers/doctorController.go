@@ -10,18 +10,25 @@ import (
 
 type DoctorResponce struct{
 	
-	ID       uint   		`json:"id,omitempty"`
+	ID       uint   	`json:"id,omitempty"`
 	Name     string 	`json:"name"`
 	Mail     string 	`json:"mail"`
 	Password string 	`json:"password"`
+	Slots	Models.Slot	`json:"slots"`
 }
 
 func ResponseMessage(user Models.Doctor) DoctorResponce{
+	var slots Models.Slot
 	return DoctorResponce{
 		ID: user.ID,
 		Name: user.Name,
 		Mail: user.Mail,
-		Password: user.Password, 
+		Password: user.Password,
+		Slots: Models.Slot{
+			ID:	slots.ID,
+			Date: slots.Date,
+			Hour: slots.Hour, 
+		},
 	}
 }
 func CreateDoctor(c *fiber.Ctx) error{
