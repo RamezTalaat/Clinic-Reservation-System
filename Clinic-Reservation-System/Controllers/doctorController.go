@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
-
 	initializers "github.com/RamezTalaat/Clinic-Reservation-System/Initializers"
 	"github.com/RamezTalaat/Clinic-Reservation-System/Models"
 	"github.com/gofiber/fiber/v2"
@@ -10,7 +8,7 @@ import (
 
 type DoctorResponce struct{
 	
-	ID       json.Number   	`json:"id,omitempty"`
+	ID       uint   		`json:"id,omitempty"`
 	Name     string 	`json:"name"`
 	Mail     string 	`json:"mail"`
 	Password string 	`json:"password"`

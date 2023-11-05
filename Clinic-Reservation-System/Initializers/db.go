@@ -7,6 +7,7 @@ import (
 	"github.com/RamezTalaat/Clinic-Reservation-System/Models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type DbInstance struct{
@@ -30,6 +31,7 @@ func ConnectToDatabase() {
 
 	//Migration
 	db.AutoMigrate(&Models.Doctor{}, &Models.Slot{}, &Models.Appointment{}, &Models.Patient{})
+	db.Logger = logger.Default.LogMode(logger.Info)
 
 	Database = DbInstance{Db : db}
 }

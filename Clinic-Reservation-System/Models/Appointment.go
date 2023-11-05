@@ -1,20 +1,11 @@
 package Models
 
-import (
-	"encoding/json"
-
-	"gorm.io/gorm"
-)
-
 type Appointment struct {
-	gorm.Model
-
-	ID 	json.Number 		`json:"id" gorm:"primaryKey"`
-	DoctorID json.Number 	`json:"doctor_id" gorm:"not null"`
-	Doctor	Doctor
-	SlotID json.Number		`json:"slot_id" gorm:"not null"`
-	Slot	Slot
-	PatientID json.Number	`json:"patient_id" gorm:"not null"`
-	Patient Patient
-
+	ID           uint    `json:"id" gorm:"primaryKey"`
+	DoctorRefer  int     `json:"doctor_id"`
+	Doctor       Doctor  `gorm:"foreignKey:DoctorRefer;references:ID"`
+	SlotRefer    int     `json:"slot_id"`
+	Slot         Slot    `gorm:"foreignKey:SlotRefer;references:ID"`
+	PatientRefer int     `json:"patient_id"`
+	Patient      Patient `gorm:"foreignKey:PatientRefer;references:ID"`
 }
