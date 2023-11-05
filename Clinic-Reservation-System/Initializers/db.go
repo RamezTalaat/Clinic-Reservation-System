@@ -29,7 +29,7 @@ func ConnectToDatabase() {
 	}
 
 	//Migration
-	db.AutoMigrate(&Models.Doctor{}, &Models.Slot{})
+	db.AutoMigrate(&Models.Doctor{}, &Models.Slot{}, &Models.Appointment{}, &Models.Patient{})
 
 	Database = DbInstance{Db : db}
 }
