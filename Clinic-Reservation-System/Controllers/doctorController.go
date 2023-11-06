@@ -95,18 +95,9 @@ func CreateDoctor(c *fiber.Ctx) error{
 func GetDoctors(c *fiber.Ctx) error{
 	doctors := []Models.Doctor{}
 
-	initializers.Database.Db.Find(&doctors)
-	response := []DoctorResponse{}
-
+	initializers.Database.Db.Preload("Slots").Find(&doctors)
 	
-	for _,doctor := range doctors{
-		var slots []Models.Slot
-		initializers.Database.Db.Find(&slots, "id = ?", doctor.ID)
-		responseDoctor := ResponseMessageWithSlots(doctor,slots)
-		response = append(response, responseDoctor)
-	}
-
-	return c.Status(200).JSON(response)
+	return c.Status(200).JSON(doctors)
 }
 func findUser(id int, doctor *Models.Doctor) error{
 	initializers.Database.Db.Find(doctor,"id = ?", id)
