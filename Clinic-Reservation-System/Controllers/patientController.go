@@ -124,6 +124,7 @@ func GetPatientByUID (c *fiber.Ctx) error {
     return c.JSON(patient)
 }
 
+
 func AddAppointment(c *fiber.Ctx) error{
 	appointment:= Models.Appointment{}
 	uuid := c.Params("uuid")
@@ -168,7 +169,7 @@ func AddAppointment(c *fiber.Ctx) error{
 		fmt.Println("Failed to convert slot id to int:", err)
 		
 	}
-	//checking doctor id
+	//checking slot id
 	var slot Models.Slot
 	result = initializers.Database.Db.Where("id = ?" ,  newslot_id).First(&slot)
 
@@ -190,5 +191,76 @@ func AddAppointment(c *fiber.Ctx) error{
 	/// make slot occuppied
 	
 	return c.Status(200).JSON("appointment added successfully")
+}
+
+func UpdateAppointment(c *fiber.Ctx) error{
+
+	
+	//checking uuid
+	uuid := c.Params("uuid")
+	db := getActiveDBInstance()
+	patientID := db.GetPatient(uuid)
+	if patientID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
+	//checking doctor_id
+	doctor_id :=  c.Params("doctor_id")
+	newdoctor_id, err :=  strconv.Atoi(doctor_id)
+	if err != nil {
+		// Handle error
+		fmt.Println("Failed to convert doctor id to int:", err)
+		
+	}
+
+	var doctor Models.Doctor
+	result := initializers.Database.Db.Where("id = ?" ,  newdoctor_id).First(&doctor)
+
+	if result.Error != nil{
+		return c.Status(400).JSON("wront doctor ID , this doctor does not exist")
+	}
+	
+	//appointment.DoctorRefer = newdoctor_id
+
+	slot_id := c.Params("slot_id")
+	newslot_id, err :=  strconv.Atoi(slot_id)
+	if err != nil {
+		// Handle error
+		fmt.Println("Failed to convert slot id to int:", err)
+	}
+	//checking slot id
+	var slot Models.Slot
+	result = initializers.Database.Db.Where("id = ?" ,  newslot_id).First(&slot)
+
+	if result.Error != nil{
+		return c.Status(400).JSON("wront slot ID , this slot does not exist")
+	}
+
+	if slot.Occuppied {
+		return c.Status(400).JSON("slot is occupied")
+	}
+
+	//checking slot id
+	appointment_id := c.Params("appointment_id")
+	var appointment Models.Appointment
+	result = initializers.Database.Db.Where("id = ?" ,  appointment_id).First(&appointment)
+
+	if result.Error != nil{
+		return c.Status(400).JSON("wront appointment ID , this appointment does not exist")
+	}
+
+	//un occupy old slot
+	var oldSlot Models.Slot
+	initializers.Database.Db.Where("id = ?" ,  appointment.SlotRefer).First(&oldSlot)
+	oldSlot.Occuppied = false
+	initializers.Database.Db.Save(&oldSlot)
+
+	// make changes to new appointment
+	slot.Occuppied = true
+	initializers.Database.Db.Save(&slot)
+	appointment.DoctorRefer = newdoctor_id
+	appointment.SlotRefer = newslot_id
+	initializers.Database.Db.Save(&appointment)
+
+	return  c.Status(200).JSON("appointment updated successfully")
 }
 
