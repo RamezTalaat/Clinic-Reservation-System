@@ -17,6 +17,7 @@ func Routers (app *fiber.App){
 	app.Post("/addDoctor",controllers.CreateDoctor)
 	app.Get("/getDoctors",controllers.GetDoctors)
 	app.Get("/getDoctor/:id",controllers.GetDoctor)
+	app.Get("/getPatients",controllers.GetPatient)
 }
 
 func welcome(c *fiber.Ctx) error {
