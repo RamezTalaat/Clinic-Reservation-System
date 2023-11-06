@@ -4,6 +4,7 @@ import (
 	initializers "github.com/RamezTalaat/Clinic-Reservation-System/Initializers"
 	"github.com/RamezTalaat/Clinic-Reservation-System/Models"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type PatientResponse struct {
@@ -28,7 +29,7 @@ func SignInPatient(c *fiber.Ctx) error{
 		return c.Status(400).JSON(err.Error())
 	}
 
-	var searchPatient Models.Doctor
+	var searchPatient Models.Patient
 	result := initializers.Database.Db.Where("mail = ? AND password = ?" ,  patient.Mail , patient.Password).First(&searchPatient)
 
 	
@@ -89,4 +90,32 @@ func CreatePatient(c *fiber.Ctx) error{
 	
 	uid := activeDb.AddPatient(searchPatient.ID)
 	return c.Status(200).JSON(uid)
+}
+
+func GetPatientByUID (c *fiber.Ctx) error {
+	var patient Models.Patient
+
+	uuid := c.Params("uuid")
+
+	db := getActiveDBInstance()
+
+	patientID := db.GetPatient(uuid)
+
+	if patientID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
+
+	
+    if err := initializers.Database.Db.Table("patients").Select("id ,name, mail, password").Where("id = ?", db.ActivePatients[uuid]).First(&patient).Error; err != nil {
+        if gorm.ErrRecordNotFound == err {
+            return c.Status(404).JSON(fiber.Map{
+                "message": "Patient not found",
+            })
+        }
+        return c.Status(500).JSON(fiber.Map{
+            "message": "Database error",
+        })
+    }
+
+    return c.JSON(patient)
 }

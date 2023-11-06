@@ -21,6 +21,7 @@ func Routers (app *fiber.App){
 	app.Post("/patientSignUp",controllers.CreatePatient)
 	app.Post("/patientSignIn",controllers.SignInPatient)
 	app.Get("/getPatients",controllers.GetPatient)
+	app.Get("/getPatient/:uuid",controllers.GetPatientByUID)
 	app.Get("/activeDB",controllers.GetActiveDB)   // to test the ative DB entries
 	
 }
