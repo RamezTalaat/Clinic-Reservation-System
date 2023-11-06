@@ -16,10 +16,11 @@ func Routers (app *fiber.App){
 	app.Get("/API", welcome)
 	app.Post("/doctorSignUp",controllers.CreateDoctor)
 	app.Post("/doctorSignIn",controllers.SignInDoctor)
-	app.Get("/getDoctors",controllers.GetDoctors)
-	app.Get("/getDoctor/:id",controllers.GetDoctor)
 	app.Post("/patientSignUp",controllers.CreatePatient)
 	app.Post("/patientSignIn",controllers.SignInPatient)
+	app.Post("/addSlot/:id",controllers.AddSlot)
+	app.Get("/getDoctors",controllers.GetDoctors)
+	app.Get("/getDoctor/:id",controllers.GetDoctor)
 	app.Get("/getPatients",controllers.GetPatient)
 	app.Get("/getPatient/:uuid",controllers.GetPatientByUID)
 	app.Get("/activeDB",controllers.GetActiveDB)   // to test the ative DB entries
@@ -31,8 +32,6 @@ func welcome(c *fiber.Ctx) error {
 }
 func main(){
 	app := fiber.New()
-
-    //app.Get("/",welcome)
 	Routers(app)
 
     app.Listen(":" + os.Getenv("PORT"))

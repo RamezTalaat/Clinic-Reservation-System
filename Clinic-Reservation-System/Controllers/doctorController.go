@@ -14,23 +14,28 @@ type DoctorResponse struct{
 	Name     string 	`json:"name"`
 	Mail     string 	`json:"mail"`
 	Password string 	`json:"password"`
-	Slots	Models.Slot	`json:"slots"`
+	Slots	 []Models.Slot	`json:"slots"`
 }
 
 func ResponseMessage(user Models.Doctor) DoctorResponse{
-	var slots Models.Slot
 	return DoctorResponse{
 		ID: user.ID,
 		Name: user.Name,
 		Mail: user.Mail,
 		Password: user.Password,
-		Slots: Models.Slot{
-			ID:	slots.ID,
-			Date: slots.Date,
-			Hour: slots.Hour, 
-		},
 	}
 }
+
+func ResponseMessageWithSlots( user Models.Doctor, slot []Models.Slot) DoctorResponse{
+	return DoctorResponse{
+		ID: user.ID,
+		Name: user.Name,
+		Mail: user.Mail,
+		Password: user.Password,
+		Slots: slot,
+	}
+}
+
 func SignInDoctor(c *fiber.Ctx) error{
 	var doctor Models.Doctor
 	if err := c.BodyParser(&doctor); err != nil{
@@ -93,8 +98,11 @@ func GetDoctors(c *fiber.Ctx) error{
 	initializers.Database.Db.Find(&doctors)
 	response := []DoctorResponse{}
 
+	
 	for _,doctor := range doctors{
-		responseDoctor :=ResponseMessage(doctor)
+		var slots []Models.Slot
+		initializers.Database.Db.Find(&slots, "id = ?", doctor.ID)
+		responseDoctor := ResponseMessageWithSlots(doctor,slots)
 		response = append(response, responseDoctor)
 	}
 
@@ -123,4 +131,29 @@ func GetDoctor(c *fiber.Ctx) error{
 
 	response := ResponseMessage(doctor)
 	return c.Status(200).JSON(response)
+}
+
+func AddSlot(c *fiber.Ctx) error {
+	doctorID := c.Params("id")
+	var newSlot Models.Slot
+
+	if err := c.BodyParser(&newSlot); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
+
+	var doctor Models.Doctor
+	
+	if err := initializers.Database.Db.First(&doctor, doctorID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Doctor not found"})
+	}
+
+	newSlot.Doctor_id = doctor.ID
+
+	result := initializers.Database.Db.Create(&newSlot)
+	if result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": result.Error.Error()})
+	}
+
+
+	return c.Status(fiber.StatusCreated).JSON(newSlot)
 }
