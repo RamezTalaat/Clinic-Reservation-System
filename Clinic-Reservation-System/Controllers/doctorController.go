@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type DoctorResponce struct{
+type DoctorResponse struct{
 	
 	ID       uint   	`json:"id,omitempty"`
 	Name     string 	`json:"name"`
@@ -17,9 +17,9 @@ type DoctorResponce struct{
 	Slots	Models.Slot	`json:"slots"`
 }
 
-func ResponseMessage(user Models.Doctor) DoctorResponce{
+func ResponseMessage(user Models.Doctor) DoctorResponse{
 	var slots Models.Slot
-	return DoctorResponce{
+	return DoctorResponse{
 		ID: user.ID,
 		Name: user.Name,
 		Mail: user.Mail,
@@ -31,22 +31,64 @@ func ResponseMessage(user Models.Doctor) DoctorResponce{
 		},
 	}
 }
+func SignInDoctor(c *fiber.Ctx) error{
+	var doctor Models.Doctor
+	if err := c.BodyParser(&doctor); err != nil{
+		return c.Status(400).JSON(err.Error())
+	}
+
+	var searchDoc Models.Doctor
+	result := initializers.Database.Db.Where("mail = ? AND password = ?" ,  doctor.Mail , doctor.Password).First(&searchDoc)
+
+	
+	if result.Error != nil{
+		return c.Status(400).JSON("Can not sign in ,Wrong mail or password")
+	}
+
+	activeDb :=  getActiveDBInstance()
+	
+	uid := activeDb.AddDoctor(searchDoc.ID)
+	return c.Status(200).JSON(uid)
+
+}
+
 func CreateDoctor(c *fiber.Ctx) error{
 	var doctor Models.Doctor
 	if err := c.BodyParser(&doctor); err != nil{
 		return c.Status(400).JSON(err.Error())
 	}
 
-	initializers.Database.Db.Create(&doctor)
-	reaspose := ResponseMessage(doctor)
+	// checking if the credentials are taken
+	var searchDoc Models.Doctor
+	result := initializers.Database.Db.Where("name = ?" , doctor.Name).First(&searchDoc)
 
-	return c.Status(200).JSON(reaspose)
+	if result.Error == nil{
+		return c.Status(400).JSON("This user name is already taken , try another one")
+	}
+	result = initializers.Database.Db.Where("mail = ?" , doctor.Mail).First(&searchDoc)
+
+	if result.Error == nil{
+		return c.Status(400).JSON("A user with this mail Already exists")
+	}
+
+	result = initializers.Database.Db.Where("password = ?" , doctor.Password).First(&searchDoc)
+
+	if result.Error == nil{
+		return c.Status(400).JSON("Password Already Taken , Try again with another password")
+	}
+
+	initializers.Database.Db.Create(&doctor)
+
+	activeDb :=  getActiveDBInstance()
+	
+	uid := activeDb.AddDoctor(doctor.ID)
+	return c.Status(200).JSON(uid)
 }
 func GetDoctors(c *fiber.Ctx) error{
 	doctors := []Models.Doctor{}
 
 	initializers.Database.Db.Find(&doctors)
-	response := []DoctorResponce{}
+	response := []DoctorResponse{}
 
 	for _,doctor := range doctors{
 		responseDoctor :=ResponseMessage(doctor)

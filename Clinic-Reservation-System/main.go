@@ -14,10 +14,15 @@ func init(){
 }
 func Routers (app *fiber.App){
 	app.Get("/API", welcome)
-	app.Post("/addDoctor",controllers.CreateDoctor)
+	app.Post("/doctorSignUp",controllers.CreateDoctor)
+	app.Post("/doctorSignIn",controllers.SignInDoctor)
 	app.Get("/getDoctors",controllers.GetDoctors)
 	app.Get("/getDoctor/:id",controllers.GetDoctor)
+	app.Post("/patientSignUp",controllers.CreatePatient)
+	app.Post("/patientSignIn",controllers.SignInPatient)
 	app.Get("/getPatients",controllers.GetPatient)
+	app.Get("/activeDB",controllers.GetActiveDB)   // to test the ative DB entries
+	
 }
 
 func welcome(c *fiber.Ctx) error {
