@@ -79,9 +79,12 @@ func CreateDoctor(c *fiber.Ctx) error{
 
 	initializers.Database.Db.Create(&doctor)
 
+	
+	initializers.Database.Db.Where("mail = ?" ,  doctor.Mail).First(&searchDoc)
+
 	activeDb :=  getActiveDBInstance()
 	
-	uid := activeDb.AddDoctor(doctor.ID)
+	uid := activeDb.AddDoctor(searchDoc.ID)
 	return c.Status(200).JSON(uid)
 }
 func GetDoctors(c *fiber.Ctx) error{

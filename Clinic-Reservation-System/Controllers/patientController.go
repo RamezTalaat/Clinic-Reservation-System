@@ -83,8 +83,10 @@ func CreatePatient(c *fiber.Ctx) error{
 
 	initializers.Database.Db.Create(&patient)
 
+	initializers.Database.Db.Where("mail = ?" ,  patient.Mail).First(&searchPatient)
+
 	activeDb :=  getActiveDBInstance()
 	
-	uid := activeDb.AddPatient(patient.ID)
+	uid := activeDb.AddPatient(searchPatient.ID)
 	return c.Status(200).JSON(uid)
 }
