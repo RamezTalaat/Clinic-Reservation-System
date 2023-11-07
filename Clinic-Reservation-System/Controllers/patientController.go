@@ -264,3 +264,44 @@ func UpdateAppointment(c *fiber.Ctx) error{
 	return  c.Status(200).JSON("appointment updated successfully")
 }
 
+func CancelAppointment(c *fiber.Ctx) error {
+
+
+	uuid := c.Params("uuid")
+	db := getActiveDBInstance()
+	patientID := db.GetPatient(uuid)
+	if patientID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
+
+
+
+    appointmentID := c.Params("appointment_id")
+	
+    appointmentIDInt, err := strconv.Atoi(appointmentID)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid appointment ID"})
+    }
+
+    
+    var appointment Models.Appointment
+    result := initializers.Database.Db.Where("id = ?", appointmentIDInt).First(&appointment)
+    if result.Error != nil {
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Appointment not found"})
+    }
+
+    
+    var slot Models.Slot
+    result = initializers.Database.Db.Where("id = ?", appointment.SlotRefer).First(&slot)
+    if result.Error != nil {
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Associated slot not found"})
+    }
+
+    
+    slot.Occuppied = false
+    initializers.Database.Db.Save(&slot)
+
+    initializers.Database.Db.Delete(&appointment)
+
+    return c.Status(fiber.StatusOK).JSON("Appointment canceled successfully")
+}

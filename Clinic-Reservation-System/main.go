@@ -26,7 +26,7 @@ func Routers (app *fiber.App){
 	app.Get("/getPatients",controllers.GetPatient)
 	app.Get("/getPatient/:uuid",controllers.GetPatientByUID)
 	app.Get("/activeDB",controllers.GetActiveDB)   // to test the ative DB entries
-	
+	app.Delete("/cancelappointment/:uuid/:appointment_id", controllers.CancelAppointment)
 }
 
 func welcome(c *fiber.Ctx) error {
