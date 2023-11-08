@@ -277,7 +277,7 @@ func CancelAppointment(c *fiber.Ctx) error {
 
 
     appointmentID := c.Params("appointment_id")
-	
+
     appointmentIDInt, err := strconv.Atoi(appointmentID)
     if err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid appointment ID"})
@@ -298,8 +298,11 @@ func CancelAppointment(c *fiber.Ctx) error {
     }
 
     
-    slot.Occuppied = false
-    initializers.Database.Db.Save(&slot)
+	var oldSlot Models.Slot
+	initializers.Database.Db.Where("id = ?" ,  appointment.SlotRefer).First(&oldSlot)
+	
+	oldSlot.Occuppied = false
+	initializers.Database.Db.Save(&oldSlot)
 
     initializers.Database.Db.Delete(&appointment)
 

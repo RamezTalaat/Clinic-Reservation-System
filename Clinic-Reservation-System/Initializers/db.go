@@ -3,7 +3,6 @@ package initializers
 import (
 	"fmt"
 	"os"
-
 	"github.com/RamezTalaat/Clinic-Reservation-System/Models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
