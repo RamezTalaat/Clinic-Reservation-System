@@ -1,10 +1,3 @@
-/** 
- * Get doctor slots
- * 
-
-**/
-
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -16,6 +9,11 @@ const Patient = () => {
   const [doctorSlots, setDoctorSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const { UUID } = useParams();
+
+
+  return(<h1>Patient</h1>);
+  
+  /*
 
   useEffect(() => {
     axios.get(`localhost:3000/getDoctors/${UUID}`)
@@ -30,7 +28,6 @@ const Patient = () => {
   const handleDoctorChange = (e) => {
     const doctorId = e.target.value;
     setSelectedDoctor(doctors.find(doctor => doctor.id === doctorId));
-    // Fetch available slots for the selected doctor
     axios.get(`api to ger doctor slots`)
       .then(response => {
         setDoctorSlots(response.data);
@@ -58,7 +55,6 @@ const Patient = () => {
       });
     }
   };
-
   return (
     <div>
       <h2>Book an Appointment</h2>
@@ -87,6 +83,7 @@ const Patient = () => {
       </button>
     </div>
   );
+  */
 }
 
 export default Patient;

@@ -7,7 +7,7 @@ const SignIn = () => {
 
   const [userData, setUserData] = useState({ username: '', password: '' });
   const [role, setRole] = useState('patient');
-  const [UUID, setUUID] = useState(null); // Added state for user UUID
+  const [UUID, setUUID] = useState(null);
 
   const history = useHistory();
 
