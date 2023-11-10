@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./SignIn.css";
 
 const SignIn = () => {
-
-  const [userData, setUserData] = useState({ email: '', password: '' });
-  const [role, setRole] = useState('patient');
-  const [UUID, setUUID] = useState(null);
+  const [userData, setUserData] = useState({ email: "", password: "" });
+  const [role, setRole] = useState("patient");
+  const [uuid, setUuid] = useState(null);
 
   const history = useHistory();
 
+  useEffect(() => {
+    // Redirect when the uuid state is updated
+    if (uuid) {
+      if (role === 'patient') {
+        history.push(`/patient/${uuid}`);
+      } else if (role === 'doctor') {
+        history.push(`/doctor/${uuid}`);
+      }
+    }
+  }, [uuid, role, history]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,52 +31,46 @@ const SignIn = () => {
   };
 
   const handleSignUpRedirect = () => {
-    history.push('/signup');
+    history.push("/signup");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
-    const endpoint = role === 'patient' ? 'http://localhost:4000/patientSignIn' : 'http://localhost:4000/doctorSignIn';
+    const endpoint =
+      role === 'patient'
+        ? 'http://localhost:4000/patientSignIn'
+        : 'http://localhost:4000/doctorSignIn';
 
     try {
       const response = await axios.post(endpoint, userData);
       console.log('User is signed in:', response.data);
 
-      setUUID(response.data.uuid);
-      console.log(UUID)
-
-      if (role === 'patient') {
-      history.push(`/patient/${response.data.uuid}`);
-    } else if (role === 'doctor') {
-      history.push(`/doctor/${response.data.uuid}`);
+      setUuid(response.data);
+    } catch (error) {
+      console.error('Sign-in error:', error);
     }
-  }
-  
-  catch (error) {
-    console.error('Sign-in error:', error);
-  }
-  
   };
-  
+
   return (
     <div>
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>mail</label>
+          <label htmlFor="email">Email</label>
           <input
-            type="mail"
+            type="email"
+            id="email"
             name="email"
-            value={userData.username}
+            value={userData.email}
             onChange={handleInputChange}
           />
         </div>
         <div>
-          <label>Password</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
+            id="password"
             name="password"
             value={userData.password}
             onChange={handleInputChange}
@@ -79,7 +82,7 @@ const SignIn = () => {
             type="radio"
             name="role"
             value="patient"
-            checked={role === 'patient'}
+            checked={role === "patient"}
             onChange={handleRoleChange}
           />
           <label>Patient</label>
@@ -87,17 +90,18 @@ const SignIn = () => {
             type="radio"
             name="role"
             value="doctor"
-            checked={role === 'doctor'}
+            checked={role === "doctor"}
             onChange={handleRoleChange}
           />
           <label>Doctor</label>
         </div>
         <button type="submit">Sign In</button>
-        <button onClick={handleSignUpRedirect}>Sign Up</button>
+        <button type="button" onClick={handleSignUpRedirect}>
+          Sign Up
+        </button>
       </form>
     </div>
   );
-}
-
+};
 
 export default SignIn;

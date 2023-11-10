@@ -6,7 +6,7 @@ import './Doctor.css';
 const Doctor = () => {
   const [slots, setSlots] = useState([]);
   const [newSlot, setNewSlot] = useState({ date: '', hour: '' });
-  const { UUID } = useParams();
+  const { uuid } = useParams();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -14,17 +14,19 @@ const Doctor = () => {
   };
 
   useEffect(() => {
-    axios.get('getSlots')
+    axios.get(`http://localhost:4000/getDoctor/${uuid}`)
       .then((response) => {
-        setSlots(response.data);
+        const {  slots } = response.data;
+
+        setSlots(slots || []);
       })
       .catch((error) => {
-        console.error('Error fetching doctor slots:', error);
+        console.error('Error slots:', error);
       });
-  }, []);
+  }, [uuid]);
 
   const addSlot = () => {
-    axios.post(`localhost:3000/addSlot/${UUID}/2`, newSlot)
+    axios.post(`http://localhost:4000/addSlot/${uuid}`, newSlot)
       .then((response) => {
         setSlots([...slots, response.data]);
         setNewSlot({ date: '', hour: '' });
@@ -34,8 +36,7 @@ const Doctor = () => {
       });
   };
 
-
-  return(
+  return (
     <div>
       <h2>Available Doctor Slots</h2>
       <ul>
@@ -63,13 +64,12 @@ const Doctor = () => {
             onChange={handleInputChange}
           />
         </div>
-      <button type="button" onClick={addSlot}>Add Slot</button>
+        <button type="button" onClick={addSlot}>
+          Add Slot
+        </button>
       </form>
     </div>
-
-
-
   );
-}
+};
 
 export default Doctor;

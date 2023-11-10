@@ -11,8 +11,8 @@ const App = ()=>{
     <Router>
       <Switch>
         <Route path="/signup" component={SignUp} />
-        <Route path="/patient/:UUID" component={Patient} />
-        <Route path="/doctor/:UUID" component={Doctor} />
+        <Route path="/patient/:uuid" component={Patient} />
+        <Route path="/doctor/:uuid" component={Doctor} />
         <Route path="/" component={SignIn} />
       </Switch>
     </Router>
