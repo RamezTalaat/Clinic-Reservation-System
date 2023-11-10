@@ -95,7 +95,7 @@ func CreateDoctor(c *fiber.Ctx) error{
 func GetDoctors(c *fiber.Ctx) error{
 	uuid := c.Params("uuid")
 	db := getActiveDBInstance()
-	doctorID := db.GetDoctor(uuid)
+	doctorID := db.GetPatient(uuid)
 
 	if doctorID == 0{
 		return c.Status(400).JSON("UUID Is incorrect")
