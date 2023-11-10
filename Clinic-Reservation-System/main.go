@@ -6,6 +6,7 @@ import (
 	controllers "github.com/RamezTalaat/Clinic-Reservation-System/Controllers"
 	initializers "github.com/RamezTalaat/Clinic-Reservation-System/Initializers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func init(){
@@ -35,6 +36,11 @@ func welcome(c *fiber.Ctx) error {
 func main(){
 	app := fiber.New()
 	Routers(app)
-
+	app.Use(cors.New(cors.Config{
+        AllowHeaders:     "Origin,Content-Type,Accept,Content-Length,Accept-Language,Accept-Encoding,Connection,Access-Control-Allow-Origin",
+        AllowOrigins:     "*",
+        AllowCredentials: true,
+        AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+    }))
     app.Listen(":" + os.Getenv("PORT"))
 }
