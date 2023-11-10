@@ -47,9 +47,16 @@ func SignInPatient(c *fiber.Ctx) error{
 	return c.Status(200).JSON(uid)
 }
 
-func GetPatient(c *fiber.Ctx) error{
-	patients := []Models.Patient{}
+func GetPatients(c *fiber.Ctx) error{
+	uuid := c.Params("uuid")
+	//checking uuid
+	db := getActiveDBInstance()
+	patientID := db.GetPatient(uuid)
+	if patientID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
 
+	patients := []Models.Patient{}
 	initializers.Database.Db.Find(&patients)
 	response := []PatientResponse{}
 
