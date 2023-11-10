@@ -5,7 +5,7 @@ import "./SignUp.css";
 
 const SignUp = () => {
 
-  const [userData, setUserData] = useState({name: '',email: '',password: '',});
+  const [userData, setUserData] = useState({name: '',mail: '',password: '',});
   const [role, setRole] = useState('patient');
   const history = useHistory();
 
@@ -22,7 +22,7 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = role === 'patient' ? 'localhost:3000/patientSignUp' : 'localhost:3000/doctorSignUp';
+    const endpoint = role === 'patient' ? 'http://localhost:3000/patientSignUp' : 'http://localhost:3000/doctorSignUp';
 
     try {
       const response = await axios.post(endpoint, userData);
