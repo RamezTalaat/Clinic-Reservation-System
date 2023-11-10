@@ -125,7 +125,15 @@ func GetDoctor(c *fiber.Ctx) error{
 }
 
 func AddSlot(c *fiber.Ctx) error {
-	doctorID := c.Params("id")
+
+	uuid := c.Params("uuid")
+	db := getActiveDBInstance()
+	doctorID := db.GetDoctor(uuid)
+
+	if doctorID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
+
 	var newSlot Models.Slot
 
 	if err := c.BodyParser(&newSlot); err != nil {

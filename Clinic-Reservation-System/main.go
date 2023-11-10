@@ -19,7 +19,7 @@ func Routers (app *fiber.App){
 	app.Post("/doctorSignIn",controllers.SignInDoctor)
 	app.Post("/patientSignUp",controllers.CreatePatient)
 	app.Post("/patientSignIn",controllers.SignInPatient)
-	app.Post("/addSlot/:id",controllers.AddSlot)
+	app.Post("/addSlot/:uuid",controllers.AddSlot)
 	app.Post("/addAppointment/:uuid/:doctor_id/:slot_id",controllers.AddAppointment)
 	app.Post("/updateAppointment/:uuid/:appointment_id/:doctor_id/:slot_id",controllers.UpdateAppointment)
 	app.Get("/getDoctors",controllers.GetDoctors)
