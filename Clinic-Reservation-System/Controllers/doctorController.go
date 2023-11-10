@@ -108,20 +108,21 @@ func findUser(id int, doctor *Models.Doctor) error{
 	return nil
 }
 func GetDoctor(c *fiber.Ctx) error{
-	id, err := c.ParamsInt("id")
+	uuid := c.Params("uuid")
+	db := getActiveDBInstance()
+	doctorID := db.GetDoctor(uuid)
+
+	if doctorID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
+
 
 	var doctor Models.Doctor
 
-	if err != nil {
-		return c.Status(400).JSON("Please enter an integer")
+	if err := initializers.Database.Db.Preload("Slots").First(&doctor, doctorID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Doctor not found"})
 	}
-
-	if err := findUser(id, &doctor); err !=nil{
-		return c.Status(400).JSON(err.Error())
-	}
-
-	response := ResponseMessage(doctor)
-	return c.Status(200).JSON(response)
+	return c.Status(200).JSON(doctor)
 }
 
 func AddSlot(c *fiber.Ctx) error {
