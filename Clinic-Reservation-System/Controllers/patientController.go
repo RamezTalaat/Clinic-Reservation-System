@@ -57,7 +57,7 @@ func GetPatients(c *fiber.Ctx) error{
 	}
 
 	patients := []Models.Patient{}
-	initializers.Database.Db.Find(&patients)
+	initializers.Database.Db.Preload("Appointments").Find(&patients)
 	response := []PatientResponse{}
 
 	for _,patient := range patients{
