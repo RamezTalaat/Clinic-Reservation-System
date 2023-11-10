@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./SignUp.css";
 
 const SignUp = () => {
-
-  const [userData, setUserData] = useState({name: '',mail: '',password: '',});
-  const [role, setRole] = useState('patient');
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [role, setRole] = useState("patient");
   const history = useHistory();
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,17 +24,20 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = role === 'patient' ? 'http://localhost:3000/patientSignUp' : 'http://localhost:3000/doctorSignUp';
+    const endpoint =
+      role === "patient"
+        ? "http://localhost:4000/patientSignUp"
+        : "http://localhost:4000/doctorSignUp";
 
     try {
       const response = await axios.post(endpoint, userData);
-      console.log('User is signed in:', response.data);
-      history.push('/signIn');
-  } catch (error) {
-      console.error('Sign-up error:', error);
+      console.log("User is signed in:", response.data);
+      history.push("/signIn");
+    } catch (error) {
+      console.error("Sign-up error:", error);
     }
-  
-   history.push('/signIn');
+
+    history.push("/signIn");
   };
 
   return (
@@ -72,7 +77,7 @@ const SignUp = () => {
             type="radio"
             name="role"
             value="patient"
-            checked={role === 'patient'}
+            checked={role === "patient"}
             onChange={handleRoleChange}
           />
           <label>Patient</label>
@@ -80,7 +85,7 @@ const SignUp = () => {
             type="radio"
             name="role"
             value="doctor"
-            checked={role === 'doctor'}
+            checked={role === "doctor"}
             onChange={handleRoleChange}
           />
           <label>Doctor</label>
