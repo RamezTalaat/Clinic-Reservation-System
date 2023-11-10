@@ -21,6 +21,10 @@ const SignIn = () => {
     setRole(e.target.value);
   };
 
+  const handleSignUpRedirect = () => {
+    history.push('/signup');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,6 +36,7 @@ const SignIn = () => {
       console.log('User is signed in:', response.data);
 
       setUUID(response.data.uuid);
+      console.log(UUID)
 
       if (role === 'patient') {
       history.push(`/patient/${response.data.uuid}`);
@@ -44,7 +49,6 @@ const SignIn = () => {
     console.error('Sign-in error:', error);
   }
   
- history.push('/doctor');
   };
   
   return (
@@ -89,6 +93,7 @@ const SignIn = () => {
           <label>Doctor</label>
         </div>
         <button type="submit">Sign In</button>
+        <button onClick={handleSignUpRedirect}>Sign Up</button>
       </form>
     </div>
   );

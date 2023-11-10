@@ -10,15 +10,13 @@ const App = ()=>{
     
     <Router>
       <Switch>
-        <Route path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignUp} />
         <Route path="/patient/:UUID" component={Patient} />
         <Route path="/doctor/:UUID" component={Doctor} />
-        <Route path="/" component={SignUp} />
+        <Route path="/" component={SignIn} />
       </Switch>
     </Router>
     
   );
 }
 export default App;
-
-//<Route path="/signup" component={SignUp} />
