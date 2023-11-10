@@ -31,7 +31,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(endpoint, userData);
-      console.log("User is signed in:", response.data);
+      console.log("User is signed up:", response.data);
       history.push("/signIn");
     } catch (error) {
       console.error("Sign-up error:", error);

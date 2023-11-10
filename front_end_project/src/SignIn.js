@@ -5,7 +5,7 @@ import "./SignIn.css";
 
 const SignIn = () => {
 
-  const [userData, setUserData] = useState({ username: '', password: '' });
+  const [userData, setUserData] = useState({ email: '', password: '' });
   const [role, setRole] = useState('patient');
   const [UUID, setUUID] = useState(null);
 
@@ -24,7 +24,8 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = role === 'patient' ? 'localhost:3000/patientSignIn' : 'localhost:3000/doctorSignIn';
+    
+    const endpoint = role === 'patient' ? 'http://localhost:4000/patientSignIn' : 'http://localhost:4000/doctorSignIn';
 
     try {
       const response = await axios.post(endpoint, userData);
@@ -51,10 +52,10 @@ const SignIn = () => {
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Username</label>
+          <label>mail</label>
           <input
-            type="text"
-            name="username"
+            type="mail"
+            name="email"
             value={userData.username}
             onChange={handleInputChange}
           />
