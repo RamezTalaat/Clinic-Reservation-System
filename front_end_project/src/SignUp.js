@@ -32,12 +32,15 @@ const SignUp = () => {
     try {
       const response = await axios.post(endpoint, userData);
       console.log("User is signed up:", response.data);
-      history.push("/signIn");
+      if (role === 'patient') {
+        history.push(`/patient/${response.data.uuid}`);
+      } else if (role === 'doctor') {
+        history.push(`/doctor/${response.data.uuid}`);
+      }
     } catch (error) {
       console.error("Sign-up error:", error);
     }
 
-    history.push("/signIn");
   };
 
   return (
