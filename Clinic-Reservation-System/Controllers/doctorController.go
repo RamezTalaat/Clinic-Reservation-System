@@ -93,6 +93,13 @@ func CreateDoctor(c *fiber.Ctx) error{
 	return c.Status(200).JSON(uid)
 }
 func GetDoctors(c *fiber.Ctx) error{
+	uuid := c.Params("uuid")
+	db := getActiveDBInstance()
+	doctorID := db.GetDoctor(uuid)
+
+	if doctorID == 0{
+		return c.Status(400).JSON("UUID Is incorrect")
+	}
 	doctors := []Models.Doctor{}
 
 	initializers.Database.Db.Preload("Slots").Find(&doctors)
