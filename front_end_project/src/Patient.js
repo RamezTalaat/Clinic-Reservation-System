@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const Patient = () => {
   const [doctors, setDoctors] = useState([]);
@@ -11,6 +11,7 @@ const Patient = () => {
   const [patientAppointments, setPatientAppointments] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const { uuid } = useParams();
+  const history = useHistory();
 
   // Fetch patient data
   useEffect(() => {
@@ -77,29 +78,46 @@ const Patient = () => {
     setSelectedSlot(e.target.value);
   };
 
-  // Make appointment
+  const handleLogout = () => {
+    history.push('/signin');
+  };
+
+  // Make or update appointment
   const handleAppointmentSubmit = () => {
     if (selectedDoctor && selectedSlot) {
-      axios
-        .post(
-          `http://localhost:4000/addAppointment/${uuid}/${selectedDoctor}/${selectedSlot}`
-        )
-        .then((response) => {
-          console.log("Appointment made successfully:", response.data);
-          // Update patient appointments after making a new appointment
+      if (editMode) {
+        // Update existing appointment
+        if (uuid && selectedAppointment) {
           axios
-            .get(`http://localhost:4000/getPatient/${uuid}`)
+            .put(
+              `http://localhost:4000/updateAppointment/${uuid}/${selectedAppointment}/${selectedDoctor}/${selectedSlot}`
+            )
             .then((response) => {
-              const patientData = response.data;
-              setPatientAppointments(patientData.appointments || []);
+              console.log("Appointment updated successfully:", response.data);
+              // Refresh patient appointments after updating
+              refreshPatientAppointments();
             })
             .catch((error) => {
-              console.error("Error fetching patient appointments:", error);
+              console.error("Error updating appointment:", error);
             });
-        })
-        .catch((error) => {
-          console.error("Error making appointment:", error);
-        });
+        } else {
+          console.error("Missing information for updating appointment.");
+        }
+      } else {
+        // Create a new appointment
+        axios
+          .post(
+            `http://localhost:4000/addAppointment/${uuid}/${selectedDoctor}/${selectedSlot}`
+          )
+          .then((response) => {
+            console.log("Appointment made successfully:", response.data);
+            // Refresh patient appointments after making a new appointment
+            refreshPatientAppointments();
+          })
+          .catch((error) => {
+            console.error("Error making appointment:", error);
+          });
+      }
     } else {
       console.error(
         "Please select both a doctor and a slot before making an appointment."
@@ -111,44 +129,39 @@ const Patient = () => {
   const handleEditClick = (appointmentId) => {
     setSelectedAppointment(appointmentId);
     setEditMode(true);
+    // Set selected doctor and slot based on the existing appointment
+    const appointment = patientAppointments.find(
+      (app) => app.id === appointmentId
+    );
+    if (appointment) {
+      setSelectedDoctor(appointment.doctor_id);
+      setSelectedSlot(appointment.slot_id);
+    }
   };
 
   // Cancel edit mode
   const handleCancelEdit = () => {
     setEditMode(false);
     setSelectedAppointment("");
+    setSelectedDoctor("");
+    setSelectedSlot("");
   };
 
-  // Update appointment
-  const handleAppointmentUpdate = () => {
-    if (uuid && selectedAppointment && selectedDoctor && selectedSlot) {
-      axios
-        .put(
-          `http://localhost:4000/updateAppointment/${uuid}/${selectedAppointment}/${selectedDoctor}/${selectedSlot}`
-        )
-        .then((response) => {
-          console.log("Appointment updated successfully:", response.data);
-          // Update patient appointments after updating an appointment
-          axios
-            .get(`http://localhost:4000/getPatient/${uuid}`)
-            .then((response) => {
-              const patientData = response.data;
-              setPatientAppointments(patientData.appointments || []);
-            })
-            .catch((error) => {
-              console.error("Error fetching patient appointments:", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error updating appointment:", error);
-        });
-
-      // Exit edit mode
-      setEditMode(false);
-      setSelectedAppointment("");
-    } else {
-      console.error("Please select a doctor and a slot before updating.");
-    }
+  // Refresh patient appointments
+  const refreshPatientAppointments = () => {
+    axios
+      .get(`http://localhost:4000/getPatient/${uuid}`)
+      .then((response) => {
+        const patientData = response.data;
+        setPatientAppointments(patientData.appointments || []);
+        setEditMode(false);
+        setSelectedAppointment("");
+        setSelectedDoctor("");
+        setSelectedSlot("");
+      })
+      .catch((error) => {
+        console.error("Error fetching patient appointments:", error);
+      });
   };
 
   return (
@@ -172,12 +185,14 @@ const Patient = () => {
           </select>
         </>
       )}
-      {selectedSlot && (
+      {(selectedSlot || editMode) && (
         <>
           <button onClick={handleAppointmentSubmit}>
             {editMode ? "Update Appointment" : "Make Appointment"}
           </button>
-          {editMode && <button onClick={handleCancelEdit}>Cancel</button>}
+          {editMode && (
+            <button onClick={handleCancelEdit}>Cancel</button>
+          )}
         </>
       )}
 
@@ -186,8 +201,8 @@ const Patient = () => {
         <thead>
           <tr>
             <th>Doctor</th>
-            <th>Slot Date</th>
-            <th>Slot Hour</th>
+            <th>Date</th>
+            <th>Hour</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -206,6 +221,8 @@ const Patient = () => {
           ))}
         </tbody>
       </table>
+
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
