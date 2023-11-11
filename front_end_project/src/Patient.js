@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
+import './Patient.css';
 
 const Patient = () => {
   const [doctors, setDoctors] = useState([]);
@@ -177,6 +178,88 @@ const Patient = () => {
       });
   };
 
+
+
+
+  return (
+    <div className="PatientContainer">
+      <h2>Choose a Doctor</h2>
+      <div className="SelectDropdown">
+        <select value={selectedDoctor} onChange={handleDoctorChange}>
+        <option value="" disabled>
+          Select a doctor
+        </option>
+        {renderDoctorOptions()}
+        </select>
+      </div>
+
+      {selectedDoctor && (
+        <>
+          <h2>Choose a Slot</h2>
+          <div className="SelectDropdown">
+            <select value={selectedSlot} onChange={handleSlotChange}>
+            <option value="" disabled>
+              Select a slot
+            </option>
+            {renderSlotOptions()}
+            </select>
+          </div>
+        </>
+      )}
+
+      {(selectedSlot || editMode) && (
+        <div className="ActionsButtons">
+          <button onClick={handleAppointmentSubmit}>
+            {editMode ? "Update Appointment" : "Make Appointment"}
+          </button>
+          {editMode && (
+            <>
+              <button onClick={handleDeleteAppointment} className="delete-button">
+                Delete Appointment
+              </button>
+              <button onClick={handleCancelEdit}>Cancel</button>
+            </>
+          )}
+        </div>
+      )}
+
+      <h2>Patient Appointments</h2>
+      <table className="PatientAppointmentsTable">
+      <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Hour</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {patientAppointments.map((appointment) => (
+            <tr key={appointment.id}>
+              <td>{appointment.Doctor.name}</td>
+              <td>{appointment.Slot.date}</td>
+              <td>{appointment.Slot.hour}</td>
+              <td>
+                <button onClick={() => handleEditClick(appointment.id)}>
+                  Edit
+                </button>
+                
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <button onClick={handleLogout}>Logout</button>
+    </div>
+  );
+
+
+
+
+
+
+/*
   return (
     <div>
       <h2>Choose a Doctor</h2>
@@ -245,6 +328,7 @@ const Patient = () => {
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
+  */
 };
 
 export default Patient;
