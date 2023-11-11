@@ -106,10 +106,10 @@ func GetDoctors(c *fiber.Ctx) error{
 	
 	return c.Status(200).JSON(doctors)
 }
-func findUser(id int, doctor *Models.Doctor) error{
-	initializers.Database.Db.Find(doctor,"id = ?", id)
+func findUser(id int, slot *Models.Slot) error{
+	initializers.Database.Db.Find(slot,"id = ?", id)
 
-	if doctor.ID == 0{
+	if slot.ID == 0{
 		return errors.New("user doesn't exist")
 	}
 	return nil
@@ -163,4 +163,22 @@ func AddSlot(c *fiber.Ctx) error {
 
 
 	return c.Status(fiber.StatusCreated).JSON(newSlot)
+}
+
+func GetSlot (c *fiber.Ctx) error{
+	id,err := c.ParamsInt("id") 
+
+	var slot Models.Slot
+
+	if err != nil{
+		return c.Status(400).JSON("Please enter an integer")
+	}
+
+	if err := findUser(id , &slot); err != nil{
+		return c.Status(400).JSON(err.Error())
+	}
+
+	initializers.Database.Db.Find(&slot)
+
+	return c.Status(200).JSON(slot)
 }
