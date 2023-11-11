@@ -55,10 +55,12 @@ const SignIn = () => {
 
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
+
+
+    <div className="SignInContainer">
+      <h2 className="SignInHeader">Sign In</h2>
+      <form className="SignInForm" onSubmit={handleSubmit}>
+      <div>
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -98,11 +100,12 @@ const SignIn = () => {
           <label>Doctor</label>
         </div>
         <button type="submit">Sign In</button>
-        <button type="button" onClick={handleSignUpRedirect}>
+        <button type="button" className="SignUpButton" onClick={handleSignUpRedirect}>
           Sign Up
         </button>
       </form>
     </div>
+
   );
 };
 
