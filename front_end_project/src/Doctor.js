@@ -45,7 +45,7 @@ const Doctor = () => {
   return (
     <div className="DoctorContainer">
     <h2>welcome Doctor, {userName}  </h2>
-    <h2>Available Doctor Slots</h2>
+    <h2>My Slots</h2>
     <div className="DoctorSlots">
       <ul>
         {slots.map((slot, index) => (
@@ -53,7 +53,7 @@ const Doctor = () => {
         ))}
       </ul>
     </div>
-    <h2>Add Doctor Slot</h2>
+    <h2>Add Slot</h2>
     <form className="AddSlotForm">
     <div>
           <label>Date:</label>
@@ -67,7 +67,7 @@ const Doctor = () => {
         <div>
           <label>Time:</label>
           <input
-            type="time"
+            type="text"
             name="hour"
             value={newSlot.hour}
             onChange={handleInputChange}

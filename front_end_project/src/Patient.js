@@ -225,7 +225,7 @@ const Patient = () => {
         </div>
       )}
 
-      <h2>Patient Appointments</h2>
+      <h2>My Appointments</h2>
       <table className="PatientAppointmentsTable">
       <thead>
           <tr>
