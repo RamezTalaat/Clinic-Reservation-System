@@ -12,9 +12,9 @@ const SignIn = () => {
 
   useEffect(() => {
     if (uuid) {
-      if (role === 'patient') {
+      if (role === "patient") {
         history.push(`/patient/${uuid}`);
-      } else if (role === 'doctor') {
+      } else if (role === "doctor") {
         history.push(`/doctor/${uuid}`);
       }
     }
@@ -33,33 +33,29 @@ const SignIn = () => {
     history.push("/signup");
   };
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const endpoint =
-      role === 'patient'
-        ? 'http://localhost:4000/patientSignIn'
-        : 'http://localhost:4000/doctorSignIn';
+      role === "patient"
+        ? "http://localhost:4000/patientSignIn"
+        : "http://localhost:4000/doctorSignIn";
 
     try {
       const response = await axios.post(endpoint, userData);
-      console.log('User is signed in:', response.data);
+      console.log("User is signed in:", response.data);
 
       setUuid(response.data);
     } catch (error) {
-      console.error('Sign-in error:', error);
+      console.error("Sign-in error:", error);
     }
   };
 
-
   return (
-
-
     <div className="SignInContainer">
       <h2 className="SignInHeader">Sign In</h2>
       <form className="SignInForm" onSubmit={handleSubmit}>
-      <div>
+        <div>
           <label htmlFor="email">Email</label>
           <input
             type="email"
@@ -99,12 +95,16 @@ const SignIn = () => {
           <label>Doctor</label>
         </div>
         <button type="submit">Sign In</button>
-        <button type="button" className="SignUpButton" onClick={handleSignUpRedirect}>
+        <hr />
+        <button
+          type="button"
+          className="SignUpButton"
+          onClick={handleSignUpRedirect}
+        >
           Sign Up
         </button>
       </form>
     </div>
-
   );
 };
 

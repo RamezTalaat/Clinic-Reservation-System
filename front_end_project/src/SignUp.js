@@ -99,6 +99,7 @@ const SignUp = () => {
         <button type="submit" className="LoginButton">
           Sign Up
         </button>
+        <hr />
         <button type="button" onClick={handleLogIn}>
           Login
         </button>
