@@ -21,6 +21,10 @@ const SignUp = () => {
     setRole(e.target.value);
   };
 
+  const handleLogIn = (e) => {
+    history.push("/signin");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -94,6 +98,7 @@ const SignUp = () => {
           <label>Doctor</label>
         </div>
         <button type="submit">Sign Up</button>
+        <button onClick={handleLogIn}>Login</button>
       </form>
     </div>
   );
