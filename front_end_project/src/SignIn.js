@@ -34,6 +34,7 @@ const SignIn = () => {
     history.push("/signup");
   };
 
+  /*
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,6 +52,27 @@ const SignIn = () => {
       console.error('Sign-in error:', error);
     }
   };
+*/
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const endpoint =
+    role === 'patient'
+      ? 'http://localhost:4000/patientSignIn'
+      : 'http://localhost:4000/doctorSignIn';
+
+  try {
+    const response = await axios.post(endpoint, userData);
+    console.log('User is signed in:', response.data);
+
+    // Clear sensitive information after successful sign-in
+    setUserData({ email: "", password: "" });
+
+    setUuid(response.data);
+  } catch (error) {
+    console.error('Sign-in error:', error);
+  }
+};
 
   return (
     <div>
