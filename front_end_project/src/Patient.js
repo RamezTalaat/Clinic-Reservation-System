@@ -22,18 +22,24 @@ const Patient = () => {
       });
     }, [uuid]);
 
+    
     useEffect(() => {
       console.log('Selected Doctor ID (in useEffect):', selectedDoctor);
-      console.log('All Doctors:', doctors);
+      
       if (selectedDoctor) {
-        const selectedDoctorData = doctors.find(doctor => doctor.id === selectedDoctor);
-        console.log('Selected Doctor Data:', selectedDoctorData);
-        
-        if (selectedDoctorData) {
-          setDoctorSlots(selectedDoctorData.slots || []);
-        }
+        // fetch slots based on the selectedDoctor's id        
+        axios.get(`http://127.0.0.1:4000/getSlots/${selectedDoctor}`)
+          .then(response => {
+            // Assuming the response.data contains the slots array
+            const doctorSlots = response.data || [];
+            setDoctorSlots(doctorSlots);
+          })
+          .catch(error => {
+            console.error('Error fetching doctor slots:', error);
+          });
       }
-    }, [selectedDoctor, doctors]);
+    }, [selectedDoctor]);
+    
     
 
     const renderDoctorOptions = () => {
