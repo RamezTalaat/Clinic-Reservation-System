@@ -86,6 +86,7 @@ const Patient = () => {
         )
         .then((response) => {
           console.log("Appointment made successfully:", response.data);
+          // Update patient appointments after making a new appointment
           axios
             .get(`http://localhost:4000/getPatient/${uuid}`)
             .then((response) => {
@@ -106,11 +107,13 @@ const Patient = () => {
     }
   };
 
+  // Enter edit mode
   const handleEditClick = (appointmentId) => {
     setSelectedAppointment(appointmentId);
     setEditMode(true);
   };
 
+  // Cancel edit mode
   const handleCancelEdit = () => {
     setEditMode(false);
     setSelectedAppointment("");
@@ -125,6 +128,7 @@ const Patient = () => {
         )
         .then((response) => {
           console.log("Appointment updated successfully:", response.data);
+          // Update patient appointments after updating an appointment
           axios
             .get(`http://localhost:4000/getPatient/${uuid}`)
             .then((response) => {
@@ -139,6 +143,7 @@ const Patient = () => {
           console.error("Error updating appointment:", error);
         });
 
+      // Exit edit mode
       setEditMode(false);
       setSelectedAppointment("");
     } else {
@@ -169,14 +174,10 @@ const Patient = () => {
       )}
       {selectedSlot && (
         <>
-          {!editMode ? (
-            <button onClick={handleAppointmentSubmit}>Make Appointment</button>
-          ) : (
-            <>
-              <button onClick={handleAppointmentUpdate}>Update Appointment</button>
-              <button onClick={handleCancelEdit}>Cancel</button>
-            </>
-          )}
+          <button onClick={handleAppointmentSubmit}>
+            {editMode ? "Update Appointment" : "Make Appointment"}
+          </button>
+          {editMode && <button onClick={handleCancelEdit}>Cancel</button>}
         </>
       )}
 
