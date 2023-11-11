@@ -42,16 +42,18 @@ const Doctor = () => {
   };
 
   return (
-    <div>
-      <h2>Available Doctor Slots</h2>
+    <div className="DoctorContainer">
+    <h2>Available Doctor Slots</h2>
+    <div className="DoctorSlots">
       <ul>
         {slots.map((slot, index) => (
           <li key={index}>{slot.date} - {slot.hour}</li>
         ))}
       </ul>
-      <h2>Add Doctor Slot</h2>
-      <form>
-        <div>
+    </div>
+    <h2>Add Doctor Slot</h2>
+    <form className="AddSlotForm">
+    <div>
           <label>Date:</label>
           <input
             type="date"
@@ -69,12 +71,12 @@ const Doctor = () => {
             onChange={handleInputChange}
           />
         </div>
-        <button type="button" onClick={addSlot}>
-          Add Slot
-        </button>
-      </form>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
+      <button type="button" onClick={addSlot}>
+        Add Slot
+      </button>
+    </form>
+    <button className="LogoutButton" onClick={handleLogout}>Logout</button>
+  </div>
   );
 };
 
