@@ -4,14 +4,15 @@ import { useParams } from 'react-router-dom';
 
 const Patient = () => {
   const [doctors, setDoctors] = useState([]);
-  const [slots, setSlots] = useState([]);
-  const [appointments, setAppointments] = useState([]);
+  const [doctorSlots, setDoctorSlots] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
+
   const { uuid } = useParams();
 
-  useEffect(() => {
-    // Fetch list of doctors
+  //fetch list of doctors
+  useEffect(() => { 
+    // Fetch the list of doctors
     axios.get(`http://localhost:4000/getDoctors/${uuid}`)
       .then(response => {
         setDoctors(response.data);
@@ -19,20 +20,46 @@ const Patient = () => {
       .catch(error => {
         console.error('Error fetching doctors:', error);
       });
+    }, [uuid]);
 
-  }, [uuid]);
+    useEffect(() => {
+      console.log('Selected Doctor ID (in useEffect):', selectedDoctor);
+      console.log('All Doctors:', doctors);
+      if (selectedDoctor) {
+        const selectedDoctorData = doctors.find(doctor => doctor.id === selectedDoctor);
+        console.log('Selected Doctor Data:', selectedDoctorData);
+        
+        if (selectedDoctorData) {
+          setDoctorSlots(selectedDoctorData.slots || []);
+        }
+      }
+    }, [selectedDoctor, doctors]);
+    
 
-  const handleDoctorChange = (event) => {
-    setSelectedDoctor(event.target.value);
-    setSelectedSlot('');
-    const selectedDoctorObj = doctors.find(doctor => doctor.id === event.target.value);
-    setSlots(selectedDoctorObj?.slots || []);
+    const renderDoctorOptions = () => {
+      return doctors.map((doctor) => (
+      <option key={doctor.id} value={doctor.id}>
+        {doctor.name}
+      </option>
+    ));
   };
   
-  const handleSlotChange = (event) => {
-    setSelectedSlot(event.target.value);
+  const renderSlotOptions = () => {
+    return doctorSlots.map((slot) => (
+      <option key={slot.id} value={slot.id}>
+        {slot.date} - {slot.hour}
+      </option>
+    ));
+  };
+  
+  const handleDoctorChange = (e) => {
+    setSelectedDoctor(e.target.value);
   };
 
+  const handleSlotChange = (e) => {
+    setSelectedSlot(e.target.value);
+  };
+  
   //make appointment
   const handleAppointmentSubmit = () => {
 
@@ -52,41 +79,22 @@ const Patient = () => {
 
   return (
     <div>
-      <h2>Available Doctors</h2>
-      <select onChange={handleDoctorChange} value={selectedDoctor}>
-        <option value="">Select a doctor</option>
-        {doctors.map(doctor => (
-          <option key={doctor.id} value={doctor.id}>
-            {doctor.name}
-          </option>
-        ))}
+      <h2>Choose a Doctor</h2>
+      <select value={selectedDoctor} onChange={handleDoctorChange}>
+        <option value="" disabled>Select a doctor</option>
+        {renderDoctorOptions()}
       </select>
 
-      <h2>Your Appointments</h2>
-      <ul>
-        {appointments.map(appointment => (
-          <li key={appointment.id}>
-            Doctor: {appointment.doctor_id}, Slot: {appointment.slot_id}
-            <button onClick={() => handleAppointmentUpdate(appointment.id)}>Update</button>
-            <button onClick={() => handleAppointmentCancel(appointment.id)}>Cancel</button>
-          </li>
-        ))}
-      </ul>
-
       {selectedDoctor && (
-        <div>
-          <h2>Slots for Selected Doctor</h2>
-          <select onChange={handleSlotChange} value={selectedSlot}>
-            <option value="">Select a slot</option>
-            {doctors.find(doctor => doctor.id === selectedDoctor)?.slots.map(slot => (
-              <option key={slot.id} value={slot.id}>
-                {slot.time}
-              </option>
-            ))}
+        <>
+          <h2>Choose a Slot</h2>
+          <select value={selectedSlot} onChange={handleSlotChange}>
+            <option value="" disabled>Select a slot</option>
+            {renderSlotOptions()}
           </select>
-          <button onClick={handleAppointmentSubmit}>Make Appointment</button>
-        </div>
+        </>
       )}
+
     </div>
   );
 };
