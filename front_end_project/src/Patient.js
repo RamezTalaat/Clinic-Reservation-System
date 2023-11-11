@@ -7,12 +7,9 @@ const Patient = () => {
   const [doctorSlots, setDoctorSlots] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
-
   const { uuid } = useParams();
 
-  //fetch list of doctors
   useEffect(() => { 
-    // Fetch the list of doctors
     axios.get(`http://localhost:4000/getDoctors/${uuid}`)
       .then(response => {
         setDoctors(response.data);
@@ -25,13 +22,14 @@ const Patient = () => {
     
     useEffect(() => {
       console.log('Selected Doctor ID (in useEffect):', selectedDoctor);
-      
+    
       if (selectedDoctor) {
-        // fetch slots based on the selectedDoctor's id        
-        axios.get(`http://127.0.0.1:4000/getSlots/${selectedDoctor}`)
+        const doctorEndpoint = `http://localhost:4000/getDoctorSlots/${uuid}/${selectedDoctor}`;
+    
+        axios.get(doctorEndpoint)
           .then(response => {
-            // Assuming the response.data contains the slots array
-            const doctorSlots = response.data || [];
+            const doctorData = response.data;
+            const doctorSlots = doctorData.slots || [];
             setDoctorSlots(doctorSlots);
           })
           .catch(error => {
@@ -39,6 +37,7 @@ const Patient = () => {
           });
       }
     }, [selectedDoctor]);
+    
     
     
 
@@ -68,7 +67,19 @@ const Patient = () => {
   
   //make appointment
   const handleAppointmentSubmit = () => {
+    console.log(uuid);
+    if (selectedDoctor && selectedSlot) {
 
+      axios.post(`http://localhost:4000/addAppointment/${uuid}/${selectedDoctor}/${selectedSlot}`)
+        .then(response => {
+          console.log('Appointment made successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('Error making appointment:', error);
+        });
+    } else {
+      console.error('Please select both a doctor and a slot before making an appointment.');
+    }
   };
 
   //update appointment
@@ -100,7 +111,11 @@ const Patient = () => {
           </select>
         </>
       )}
-
+      {selectedSlot && (
+        <>
+          <button onClick={handleAppointmentSubmit}>Make Appointment</button>
+        </>
+      )}
     </div>
   );
 };
