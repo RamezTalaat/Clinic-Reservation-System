@@ -27,6 +27,7 @@ func Routers (app *fiber.App){
 	app.Get("/getPatients/:uuid",controllers.GetPatients)
 	app.Get("/getPatient/:uuid",controllers.GetPatientByUID)
 	app.Get("/getSlot/:id",controllers.GetSlot)
+	app.Get("/getSlots/:id",controllers.GetSlotsByDoctorID)
 	app.Get("/activeDB",controllers.GetActiveDB)   // to test the ative DB entries
 	app.Delete("/cancelappointment/:uuid/:appointment_id", controllers.CancelAppointment)
 }

@@ -182,3 +182,18 @@ func GetSlot (c *fiber.Ctx) error{
 
 	return c.Status(200).JSON(slot)
 }
+
+func GetSlotsByDoctorID(c *fiber.Ctx) error {
+	doctorID, err := c.ParamsInt("id")
+	if err != nil {
+		return c.Status(400).JSON("Invalid doctor ID")
+	}
+
+	var doctor Models.Doctor
+
+	if err := initializers.Database.Db.Preload("Slots").First(&doctor, doctorID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Doctor not found"})
+	}
+
+	return c.Status(200).JSON(doctor.Slots)
+}
