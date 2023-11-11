@@ -199,13 +199,21 @@ const Patient = () => {
         </>
       )}
       {(selectedSlot || editMode) && (
-        <>
-          <button onClick={handleAppointmentSubmit}>
-            {editMode ? "Update Appointment" : "Make Appointment"}
-          </button>
-          {editMode && <button onClick={handleCancelEdit}>Cancel</button>}
-        </>
-      )}
+  <>
+    <button onClick={handleAppointmentSubmit}>
+      {editMode ? "Update Appointment" : "Make Appointment"}
+    </button>
+    {editMode && (
+      <>
+        <button onClick={handleDeleteAppointment} className="delete-button">
+          Delete Appointment
+        </button>
+        <button onClick={handleCancelEdit}>Cancel</button>
+      </>
+    )}
+  </>
+)}
+
 
       <h2>Patient Appointments</h2>
       <table>
@@ -227,9 +235,7 @@ const Patient = () => {
                 <button onClick={() => handleEditClick(appointment.id)}>
                   Edit
                 </button>
-                <button onClick={() => handleDeleteAppointment(appointment.id)}>
-                  Delete
-                </button>
+                
               </td>
             </tr>
           ))}
