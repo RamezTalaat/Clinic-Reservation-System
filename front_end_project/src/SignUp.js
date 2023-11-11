@@ -48,10 +48,11 @@ const SignUp = () => {
   };
 
   return (
+
+    <div className="SignUpContainer">
+    <h2 className="SignUpHeader">Sign Up</h2>
+    <form className="SignUpForm" onSubmit={handleSubmit}>
     <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
           <label>Name</label>
           <input
             type="text"
@@ -97,10 +98,14 @@ const SignUp = () => {
           />
           <label>Doctor</label>
         </div>
-        <button type="submit">Sign Up</button>
-        <button onClick={handleLogIn}>Login</button>
-      </form>
-    </div>
+      <button type="submit" className="LoginButton">
+        Sign Up
+      </button>
+      <button type="button" onClick={handleLogIn}>
+        Login
+      </button>
+    </form>
+  </div>
   );
 };
 
