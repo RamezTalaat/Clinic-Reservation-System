@@ -36,23 +36,21 @@ const SignUp = () => {
     try {
       const response = await axios.post(endpoint, userData);
       console.log("User is signed up:", response.data);
-      if (role === 'patient') {
-        history.push(`/patient/${response.data.uuid}`);
-      } else if (role === 'doctor') {
-        history.push(`/doctor/${response.data.uuid}`);
+      if (role === "patient") {
+        history.push(`/patient/${response.data}`);
+      } else if (role === "doctor") {
+        history.push(`/doctor/${response.data}`);
       }
     } catch (error) {
       console.error("Sign-up error:", error);
     }
-
   };
 
   return (
-
     <div className="SignUpContainer">
-    <h2 className="SignUpHeader">Sign Up</h2>
-    <form className="SignUpForm" onSubmit={handleSubmit}>
-    <div>
+      <h2 className="SignUpHeader">Sign Up</h2>
+      <form className="SignUpForm" onSubmit={handleSubmit}>
+        <div>
           <label>Name</label>
           <input
             type="text"
@@ -98,14 +96,14 @@ const SignUp = () => {
           />
           <label>Doctor</label>
         </div>
-      <button type="submit" className="LoginButton">
-        Sign Up
-      </button>
-      <button type="button" onClick={handleLogIn}>
-        Login
-      </button>
-    </form>
-  </div>
+        <button type="submit" className="LoginButton">
+          Sign Up
+        </button>
+        <button type="button" onClick={handleLogIn}>
+          Login
+        </button>
+      </form>
+    </div>
   );
 };
 
