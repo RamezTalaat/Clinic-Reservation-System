@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import './Doctor.css';
 
 const Doctor = () => {
   const [slots, setSlots] = useState([]);
   const [newSlot, setNewSlot] = useState({ date: '', hour: '' });
   const { uuid } = useParams();
+  const history = useHistory();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewSlot({ ...newSlot, [name]: value });
+  };
+
+  const handleLogout = () => {
+    history.push('/signin');
   };
 
   useEffect(() => {
@@ -68,6 +73,7 @@ const Doctor = () => {
           Add Slot
         </button>
       </form>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
