@@ -166,8 +166,8 @@ func AddSlot(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(newSlot)
 }
 
-func GetSlot (c *fiber.Ctx) error{
-	id,err := c.ParamsInt("id") 
+func GetDoctorSlots (c *fiber.Ctx) error{
+	id,err := c.ParamsInt("doctor_id") 
 
 	if err != nil{
 		return c.Status(400).JSON("Please enter an integer")
