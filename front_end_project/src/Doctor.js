@@ -8,6 +8,7 @@ const Doctor = () => {
   const [newSlot, setNewSlot] = useState({ date: '', hour: '' });
   const { uuid } = useParams();
   const history = useHistory();
+  const [userName ,setUserName ]= useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +23,7 @@ const Doctor = () => {
     axios.get(`http://localhost:4000/getDoctor/${uuid}`)
       .then((response) => {
         const {  slots } = response.data;
-
+        setUserName(response.data.name);
         setSlots(slots || []);
       })
       .catch((error) => {
@@ -43,6 +44,7 @@ const Doctor = () => {
 
   return (
     <div className="DoctorContainer">
+    <h2>welcome Doctor, {userName}  </h2>
     <h2>Available Doctor Slots</h2>
     <div className="DoctorSlots">
       <ul>

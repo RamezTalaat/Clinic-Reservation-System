@@ -11,6 +11,7 @@ const Patient = () => {
   const [selectedAppointment, setSelectedAppointment] = useState("");
   const [patientAppointments, setPatientAppointments] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [userName ,setUserName ]= useState("");
   const { uuid } = useParams();
   const history = useHistory();
 
@@ -20,6 +21,7 @@ const Patient = () => {
       .get(`http://localhost:4000/getPatient/${uuid}`)
       .then((response) => {
         const patientData = response.data;
+        setUserName(patientData.name);
         setPatientAppointments(patientData.appointments || []);
       })
       .catch((error) => {
@@ -94,7 +96,6 @@ const Patient = () => {
             )
             .then((response) => {
               console.log("Appointment updated successfully:", response.data);
-              // Refresh patient appointments after updating
               refreshPatientAppointments();
             })
             .catch((error) => {
@@ -183,6 +184,7 @@ const Patient = () => {
 
   return (
     <div className="PatientContainer">
+      <h2>welcome, {userName}  </h2>
       <h2>Choose a Doctor</h2>
       <div className="SelectDropdown">
         <select value={selectedDoctor} onChange={handleDoctorChange}>
