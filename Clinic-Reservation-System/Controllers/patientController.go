@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -104,31 +105,23 @@ func CreatePatient(c *fiber.Ctx) error{
 }
 
 func GetPatientByUID (c *fiber.Ctx) error {
-	var patient Models.Patient
+    uuid := c.Params("uuid")
+    db := getActiveDBInstance()
+    patientID := db.GetPatient(uuid)
 
-	uuid := c.Params("uuid")
-
-	db := getActiveDBInstance()
-
-	patientID := db.GetPatient(uuid)
-
-	if patientID == 0{
-		return c.Status(400).JSON("UUID Is incorrect")
-	}
-
-	
-    if err := initializers.Database.Db.Table("patients").Select("id ,name, mail, password").Where("id = ?", db.ActivePatients[uuid]).Preload("Appointments").First(&patient).Error; err != nil {
-        if gorm.ErrRecordNotFound == err {
-            return c.Status(404).JSON(fiber.Map{
-                "message": "Patient not found",
-            })
-        }
-        return c.Status(500).JSON(fiber.Map{
-            "message": "Database error",
-        })
+    if patientID == 0 {
+        return c.Status(400).JSON("UUID Is incorrect")
     }
 
-    return c.JSON(patient)
+    var patient Models.Patient
+    result := initializers.Database.Db.Preload("Appointments").Preload("Appointments.Doctor").Preload("Appointments.Slot").First(&patient, patientID)
+    if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Patient not found"})
+    } else if result.Error != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": result.Error.Error()})
+    }
+
+    return c.Status(200).JSON(patient)
 }
 
 
