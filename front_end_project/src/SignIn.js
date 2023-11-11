@@ -11,7 +11,6 @@ const SignIn = () => {
   const history = useHistory();
 
   useEffect(() => {
-    // Redirect when the uuid state is updated
     if (uuid) {
       if (role === 'patient') {
         history.push(`/patient/${uuid}`);
