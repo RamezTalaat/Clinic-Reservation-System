@@ -79,17 +79,16 @@ const Patient = () => {
   };
 
   const handleLogout = () => {
-    history.push('/signin');
+    history.push("/signin");
   };
 
   // Make or update appointment
   const handleAppointmentSubmit = () => {
     if (selectedDoctor && selectedSlot) {
       if (editMode) {
-        // Update existing appointment
         if (uuid && selectedAppointment) {
           axios
-            .put(
+            .post(
               `http://localhost:4000/updateAppointment/${uuid}/${selectedAppointment}/${selectedDoctor}/${selectedSlot}`
             )
             .then((response) => {
@@ -104,14 +103,12 @@ const Patient = () => {
           console.error("Missing information for updating appointment.");
         }
       } else {
-        // Create a new appointment
         axios
           .post(
             `http://localhost:4000/addAppointment/${uuid}/${selectedDoctor}/${selectedSlot}`
           )
           .then((response) => {
             console.log("Appointment made successfully:", response.data);
-            // Refresh patient appointments after making a new appointment
             refreshPatientAppointments();
           })
           .catch((error) => {
@@ -125,11 +122,29 @@ const Patient = () => {
     }
   };
 
-  // Enter edit mode
+  const handleDeleteAppointment = () => {
+    if (window.confirm("Are you sure you want to delete this appointment?")) {
+      if (uuid && selectedAppointment) {
+        axios
+          .delete(
+            `http://localhost:4000/cancelAppointment/${uuid}/${selectedAppointment}`
+          )
+          .then((response) => {
+            console.log("Appointment deleted successfully:", response.data);
+            refreshPatientAppointments();
+          })
+          .catch((error) => {
+            console.error("Error deleting appointment:", error);
+          });
+      } else {
+        console.error("Missing information for deleting appointment.");
+      }
+    }
+  };
+
   const handleEditClick = (appointmentId) => {
     setSelectedAppointment(appointmentId);
     setEditMode(true);
-    // Set selected doctor and slot based on the existing appointment
     const appointment = patientAppointments.find(
       (app) => app.id === appointmentId
     );
@@ -139,7 +154,6 @@ const Patient = () => {
     }
   };
 
-  // Cancel edit mode
   const handleCancelEdit = () => {
     setEditMode(false);
     setSelectedAppointment("");
@@ -147,7 +161,6 @@ const Patient = () => {
     setSelectedSlot("");
   };
 
-  // Refresh patient appointments
   const refreshPatientAppointments = () => {
     axios
       .get(`http://localhost:4000/getPatient/${uuid}`)
@@ -190,9 +203,7 @@ const Patient = () => {
           <button onClick={handleAppointmentSubmit}>
             {editMode ? "Update Appointment" : "Make Appointment"}
           </button>
-          {editMode && (
-            <button onClick={handleCancelEdit}>Cancel</button>
-          )}
+          {editMode && <button onClick={handleCancelEdit}>Cancel</button>}
         </>
       )}
 
@@ -215,6 +226,9 @@ const Patient = () => {
               <td>
                 <button onClick={() => handleEditClick(appointment.id)}>
                   Edit
+                </button>
+                <button onClick={() => handleDeleteAppointment(appointment.id)}>
+                  Delete
                 </button>
               </td>
             </tr>
