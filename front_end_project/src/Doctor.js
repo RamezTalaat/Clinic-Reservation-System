@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import './Doctor.css';
+import API_ENDPOINTS from './apiConfig';
 
 const Doctor = () => {
   const [slots, setSlots] = useState([]);
@@ -20,7 +21,7 @@ const Doctor = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/getDoctor/${uuid}`)
+    axios.get(`${API_ENDPOINTS.GET_DOCTOR}/${uuid}`)
       .then((response) => {
         const {  slots } = response.data;
         setUserName(response.data.name);
@@ -32,7 +33,7 @@ const Doctor = () => {
   }, [uuid]);
 
   const addSlot = () => {
-    axios.post(`http://localhost:4000/addSlot/${uuid}`, newSlot)
+    axios.post(`${API_ENDPOINTS.ADD_SLOT}/${uuid}`, newSlot)
       .then((response) => {
         setSlots([...slots, response.data]);
         setNewSlot({ date: '', hour: '' });

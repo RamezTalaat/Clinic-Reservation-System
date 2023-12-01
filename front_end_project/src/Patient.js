@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import './Patient.css';
+import API_ENDPOINTS from './apiConfig';
 
 const Patient = () => {
   const [doctors, setDoctors] = useState([]);
@@ -18,7 +19,7 @@ const Patient = () => {
   // Fetch patient data
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/getPatient/${uuid}`)
+      .get(API_ENDPOINTS.GET_PATIENT + `/${uuid}`)
       .then((response) => {
         const patientData = response.data;
         setUserName(patientData.name);
@@ -32,7 +33,7 @@ const Patient = () => {
   // Fetch doctors
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/getDoctors/${uuid}`)
+      .get(API_ENDPOINTS.GET_DOCTORS + `/${uuid}`)
       .then((response) => {
         setDoctors(response.data);
       })
@@ -45,7 +46,7 @@ const Patient = () => {
   useEffect(() => {
     if (selectedDoctor) {
       axios
-        .get(`http://localhost:4000/getDoctorSlots/${uuid}/${selectedDoctor}`)
+        .get(`${API_ENDPOINTS.GET_DOCTOR_SLOTS}/${uuid}/${selectedDoctor}`)
         .then((response) => {
           const doctorData = response.data;
           const doctorSlots = doctorData.slots || [];
@@ -92,7 +93,7 @@ const Patient = () => {
         if (uuid && selectedAppointment) {
           axios
             .post(
-              `http://localhost:4000/updateAppointment/${uuid}/${selectedAppointment}/${selectedDoctor}/${selectedSlot}`
+              `${API_ENDPOINTS.UPDATE_APPOINTMENT}/${uuid}/${selectedAppointment}/${selectedDoctor}/${selectedSlot}`
             )
             .then((response) => {
               console.log("Appointment updated successfully:", response.data);
@@ -107,7 +108,7 @@ const Patient = () => {
       } else {
         axios
           .post(
-            `http://localhost:4000/addAppointment/${uuid}/${selectedDoctor}/${selectedSlot}`
+            `${API_ENDPOINTS.ADD_APPOINTMENT}/${uuid}/${selectedDoctor}/${selectedSlot}`
           )
           .then((response) => {
             console.log("Appointment made successfully:", response.data);
@@ -129,7 +130,7 @@ const Patient = () => {
       if (uuid && selectedAppointment) {
         axios
           .delete(
-            `http://localhost:4000/cancelAppointment/${uuid}/${selectedAppointment}`
+            `${API_ENDPOINTS.CANCEL_APPOINTMENT}/${uuid}/${selectedAppointment}`
           )
           .then((response) => {
             console.log("Appointment deleted successfully:", response.data);
@@ -165,7 +166,7 @@ const Patient = () => {
 
   const refreshPatientAppointments = () => {
     axios
-      .get(`http://localhost:4000/getPatient/${uuid}`)
+      .get(API_ENDPOINTS.GET_PATIENT + `/${uuid}`)
       .then((response) => {
         const patientData = response.data;
         setPatientAppointments(patientData.appointments || []);

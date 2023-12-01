@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./SignIn.css";
+import API_ENDPOINTS from './apiConfig';
 
 const SignIn = () => {
   const [userData, setUserData] = useState({ email: "", password: "" });
@@ -38,8 +39,8 @@ const SignIn = () => {
 
     const endpoint =
       role === "patient"
-        ? "http://localhost:4000/patientSignIn"
-        : "http://localhost:4000/doctorSignIn";
+        ? API_ENDPOINTS.PATIENT_SIGN_IN
+        : API_ENDPOINTS.DOCTOR_SIGN_IN;
 
     try {
       const response = await axios.post(endpoint, userData);
