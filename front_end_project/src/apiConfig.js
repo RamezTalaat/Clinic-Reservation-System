@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:4000';
+
 const API_ENDPOINTS = {
     // patient
     PATIENT_SIGN_IN: `${BASE_URL}/patientSignIn`,
