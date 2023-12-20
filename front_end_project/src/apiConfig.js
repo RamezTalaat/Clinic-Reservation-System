@@ -1,4 +1,5 @@
 
+const BASE_URL = process.env.BASE_URL;
 const API_ENDPOINTS = {
     // patient
     PATIENT_SIGN_IN: `${BASE_URL}/patientSignIn`,
