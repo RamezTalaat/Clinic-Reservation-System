@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN go install github.com/gofiber/fiber/v2
-RUN go install gorm.io/gorm
-RUN go install gorm.io/driver/postgres
+RUN go install github.com/gofiber/fiber/v2@latest
+RUN go install gorm.io/gorm@latest
+RUN go install gorm.io/driver/postgres@latest
 RUN go build -o main .
 
 ENV PORT 4000
