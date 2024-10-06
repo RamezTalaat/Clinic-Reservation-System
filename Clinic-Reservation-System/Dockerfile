@@ -11,13 +11,6 @@ RUN go get -d -v gorm.io/gorm@latest
 RUN go get -d -v gorm.io/driver/postgres@latest
 RUN go build -o main .
 
-ENV PORT 4000
-ENV DB_HOST localhost
-ENV DB_USER postgres
-ENV DB_PASSWORD postgres
-ENV DB_NAME clinicreservationsystem
-ENV DB_PORT 5432
-
-EXPOSE $PORT
+EXPOSE 4000
 
 CMD ["./main"] 

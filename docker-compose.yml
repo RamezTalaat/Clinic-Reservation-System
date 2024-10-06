@@ -1,13 +1,11 @@
 version: '3.9'
-
-
 services:
   go-app:
     container_name: go-app
-    image: hazimemam60/go-app:1.0
+    image: hazimemam/go-app:1.0
     build: ./Clinic-Reservation-System
     environment:
-      DB_URL: "host=go_db user=postgres password=2362 dbname=clinicreservationsystem port=5432"
+      DB_URL: "host=go_db user=postgres password=postgres dbname=clinicreservationsystem port=5432"
     ports:
       - "4000:4000"
     depends_on: 
@@ -16,7 +14,7 @@ services:
     container_name: go_db
     image: postgres:16.0
     environment:
-      POSTGRES_PASSWORD: 2362
+      POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: clinicreservationsystem
     ports:
@@ -30,7 +28,5 @@ services:
       - "3000:3000"
     depends_on:
       - go-app
-
-
 volumes:
   pgdata: {}
